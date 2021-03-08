@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
 const path = require('path');
+const camelize = require('camelize');
 
 const app = express();
 const port = 3000;
@@ -15,12 +16,24 @@ app.use('/', express.static(path.join(__dirname, '../public')));
 // your API calls
 
 // example API call
-app.get('/apod', async (req, res) => {
+app.get('/rovers', async (req, res) => {
   try {
-    let image = await fetch(
-      `https://api.nasa.gov/planetary/apod?api_key=${process.env.API_KEY}`
+    const { rover } = req.query;
+    const response = await fetch(
+      `https://api.nasa.gov/mars-photos/api/v1/manifests/${rover}?api_key=${process.env.API_KEY}`
+    );
+    const data = camelize(await response.json());
+    res.send({ ...data });
+  } catch (e) {}
+});
+
+app.get('/images', async (req, res) => {
+  try {
+    const { rover, page } = req.query;
+    const response = await fetch(
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=1000&page=${page}&api_key=${process.env.API_KEY}`
     ).then(res => res.json());
-    res.send({ image });
+    res.send({ data: response });
   } catch (err) {
     console.log('error:', err);
   }
