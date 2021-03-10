@@ -23,7 +23,7 @@ app.get('/rovers', async (req, res) => {
       `https://api.nasa.gov/mars-photos/api/v1/manifests/${rover}?api_key=${process.env.API_KEY}`
     );
     const data = camelize(await response.json());
-    res.send({ ...data });
+    res.send({ ...data.photoManifest });
   } catch (e) {}
 });
 

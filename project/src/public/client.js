@@ -1,9 +1,8 @@
 let store = {
   user: { name: 'Student' },
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
-  landingDate: '',
-  launchDate: '',
-  status: ''
+  data: null,
+  selectedRover: 'Curiosity'
 };
 
 // add our markup to the page
@@ -20,14 +19,20 @@ const render = async (root, state) => {
 
 // create content
 const App = state => {
-  let { rovers } = state;
+  let { selectedRover, data } = state;
+  if (data === null) {
+    getRoverData(selectedRover);
+  }
 
   return `
         <header></header>
         <main>
             ${Greeting(store.user.name)}
             <section>
-                ${Rovers(rovers[0].toLowerCase())}
+                <div>
+                  <h3>${selectedRover}</h3>
+                </div>
+                ${RoverInfo(data)}
             </section>
         </main>
         <footer></footer>
@@ -54,16 +59,33 @@ const Greeting = name => {
     `;
 };
 
-const Rovers = rover => {
-  getRoverData(rover);
+const RoverInfo = data => {
+  if (!data) {
+    return `<div>Loading...</div>`;
+  }
+  const { landingDate, launchDate, status } = data;
+  return `
+    <div>
+      <div>
+        <span>Landing Date: ${landingDate}</span>
+      </div>
+      <div>
+        <span>Launch Date: ${launchDate}</span>
+      </div>
+      <div>
+        <span>Current status: ${status}</span>
+      </div>
+    </div>
+  `;
 };
 
 // ------------------------------------------------------  API CALLS
 const getRoverData = async rover => {
   try {
     const response = await fetch(`http://localhost:3000/rovers?rover=${rover}`);
-    const { landingDate, launchDate, status } = await response.json();
-    updateStore(store, { landingDate, launchDate, status });
+    const data = await response.json();
+    const { landingDate, launchDate, status, maxDate } = data;
+    updateStore(store, { data: { landingDate, launchDate, status, maxDate } });
   } catch (e) {}
 };
 const getRoverImages = async rover => {
@@ -71,6 +93,5 @@ const getRoverImages = async rover => {
   try {
     const response = await fetch(`http://localhost:3000/rovers?rover=${rover}&page=${page}`);
     const data = await response.json();
-    console.log(data);
   } catch (e) {}
 };
