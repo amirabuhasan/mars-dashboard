@@ -50,24 +50,16 @@ window.addEventListener('load', () => {
 
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
 const Greeting = name => {
-  if (name) {
-    return `
-            <h1>Welcome, ${name}!</h1>
-        `;
-  }
-
-  return `
-        <h1>Hello!</h1>
-    `;
+  return `<h1 class="Greeting">${name ? `Welcome, ${name}` : 'Hello'}!</h1>`;
 };
 
 const RoverInfo = data => {
   if (!data) {
-    return `<div>Loading rover info...</div>`;
+    return `<div class="RoverInfo">Loading rover info...</div>`;
   }
   const { landingDate, launchDate, status } = data;
   return `
-    <div>
+    <div class="RoverInfo">
       <div>
         <span>Landing Date: ${landingDate}</span>
       </div>

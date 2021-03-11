@@ -20,6 +20,10 @@ footer {
   /* footer styles */
 }
 
+.RoverInfo {
+  margin-bottom: 20px;
+}
+
 .RoverPhotos {
   display: flex;
   flex-wrap: wrap;
