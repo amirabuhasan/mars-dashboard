@@ -21,9 +21,6 @@ const render = async (root, state) => {
 // create content
 const App = state => {
   let { selectedRover, data, photos, rovers } = state;
-  if (data === null) {
-    getRoverData(selectedRover);
-  }
 
   return `
         <header></header>
@@ -55,6 +52,7 @@ const App = state => {
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
   render(root, store);
+  getRoverData('Curiosity');
 });
 // ------------------------------------------------------  COMPONENTS
 const onChange = ({ value }) => {
@@ -103,12 +101,16 @@ const RoverPhotos = photos => {
 // ------------------------------------------------------  API CALLS
 const getRoverData = async rover => {
   try {
+    updateStore(store, {
+      data: null,
+      photos: [],
+      selectedRover: rover
+    });
     const response = await fetch(`http://localhost:3000/rovers?rover=${rover}`);
     const data = await response.json();
     const { landingDate, launchDate, status, maxDate, maxSol } = data;
     updateStore(store, {
-      data: { landingDate, launchDate, status, maxDate },
-      selectedRover: rover
+      data: { landingDate, launchDate, status, maxDate }
     });
     await getRoverPhotos(rover, maxSol);
   } catch (e) {}
