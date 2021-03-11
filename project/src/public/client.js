@@ -2,7 +2,8 @@ let store = {
   user: { name: 'Student' },
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
   data: null,
-  selectedRover: 'Curiosity'
+  selectedRover: 'Curiosity',
+  photos: []
 };
 
 // add our markup to the page
@@ -19,7 +20,7 @@ const render = async (root, state) => {
 
 // create content
 const App = state => {
-  let { selectedRover, data } = state;
+  let { selectedRover, data, photos } = state;
   if (data === null) {
     getRoverData(selectedRover);
   }
@@ -33,6 +34,7 @@ const App = state => {
                   <h3>${selectedRover}</h3>
                 </div>
                 ${RoverInfo(data)}
+                ${RoverPhotos(photos)}
             </section>
         </main>
         <footer></footer>
@@ -61,7 +63,7 @@ const Greeting = name => {
 
 const RoverInfo = data => {
   if (!data) {
-    return `<div>Loading...</div>`;
+    return `<div>Loading rover info...</div>`;
   }
   const { landingDate, launchDate, status } = data;
   return `
@@ -79,19 +81,37 @@ const RoverInfo = data => {
   `;
 };
 
+const RoverPhotos = photos => {
+  if (!photos || photos.length === 0) {
+    return `
+    <div>Loading photos...</div>
+    `;
+  }
+  return `
+    <div class="RoverPhotos">
+      ${photos.map(p => {
+        return `<img class="RoverPhoto" src=${p.imgSrc} />`;
+      })}
+    </div>
+  `;
+};
+
 // ------------------------------------------------------  API CALLS
 const getRoverData = async rover => {
   try {
     const response = await fetch(`http://localhost:3000/rovers?rover=${rover}`);
     const data = await response.json();
-    const { landingDate, launchDate, status, maxDate } = data;
+    const { landingDate, launchDate, status, maxDate, maxSol } = data;
     updateStore(store, { data: { landingDate, launchDate, status, maxDate } });
+    await getRoverPhotos(rover, maxSol);
   } catch (e) {}
 };
-const getRoverImages = async rover => {
-  const page = 1;
+const getRoverPhotos = async (rover, sol, page = 1) => {
   try {
-    const response = await fetch(`http://localhost:3000/rovers?rover=${rover}&page=${page}`);
+    const response = await fetch(
+      `http://localhost:3000/photos?rover=${rover}&sol=${sol}&page=${page}`
+    );
     const data = await response.json();
+    updateStore(store, { photos: data.photos });
   } catch (e) {}
 };

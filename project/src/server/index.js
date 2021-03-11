@@ -27,13 +27,14 @@ app.get('/rovers', async (req, res) => {
   } catch (e) {}
 });
 
-app.get('/images', async (req, res) => {
+app.get('/photos', async (req, res) => {
   try {
-    const { rover, page } = req.query;
+    const { rover, sol, page } = req.query;
     const response = await fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=1000&page=${page}&api_key=${process.env.API_KEY}`
-    ).then(res => res.json());
-    res.send({ data: response });
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=${sol}&page=${page}&api_key=${process.env.API_KEY}`
+    );
+    const data = camelize(await response.json());
+    res.send({ photos: data.photos });
   } catch (err) {
     console.log('error:', err);
   }
