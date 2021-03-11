@@ -35,6 +35,10 @@ footer {
   height: 200px;
 }
 
+.RoverName {
+  display: flex;
+  justify-content: space-between;
+}
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
   /* use mobile */

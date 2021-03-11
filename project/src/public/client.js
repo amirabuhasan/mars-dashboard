@@ -20,7 +20,7 @@ const render = async (root, state) => {
 
 // create content
 const App = state => {
-  let { selectedRover, data, photos } = state;
+  let { selectedRover, data, photos, rovers } = state;
   if (data === null) {
     getRoverData(selectedRover);
   }
@@ -30,8 +30,19 @@ const App = state => {
         <main>
             ${Greeting(store.user.name)}
             <section>
-                <div>
+                <div class="RoverName">
                   <h3>${selectedRover}</h3>
+                  <label>
+                    Select a rover:
+                    <select id="SelectRover" name="rovers" onchange="onChange(this)">
+                      ${rovers.map(
+                        r =>
+                          `<option value=${r} ${
+                            selectedRover === r ? 'selected' : ''
+                          }>${r}</option>`
+                      )}
+                    </select>
+                  </label>
                 </div>
                 ${RoverInfo(data)}
                 ${RoverPhotos(photos)}
@@ -45,9 +56,10 @@ const App = state => {
 window.addEventListener('load', () => {
   render(root, store);
 });
-
 // ------------------------------------------------------  COMPONENTS
-
+const onChange = ({ value }) => {
+  getRoverData(value);
+};
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
 const Greeting = name => {
   return `<h1 class="Greeting">${name ? `Welcome, ${name}` : 'Hello'}!</h1>`;
@@ -94,7 +106,10 @@ const getRoverData = async rover => {
     const response = await fetch(`http://localhost:3000/rovers?rover=${rover}`);
     const data = await response.json();
     const { landingDate, launchDate, status, maxDate, maxSol } = data;
-    updateStore(store, { data: { landingDate, launchDate, status, maxDate } });
+    updateStore(store, {
+      data: { landingDate, launchDate, status, maxDate },
+      selectedRover: rover
+    });
     await getRoverPhotos(rover, maxSol);
   } catch (e) {}
 };
