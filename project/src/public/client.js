@@ -1,31 +1,31 @@
-let store = {
+let store = Immutable.Map({
   user: { name: 'Student' },
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
   data: null,
   selectedRover: 'Curiosity',
   photos: []
-};
+});
 
 // add our markup to the page
 const root = document.getElementById('root');
 
 const updateStore = (store, newState) => {
-  store = Object.assign(store, newState);
-  render(root, store);
+  const updatedStore = store.merge(store, newState);
+  render(root, updatedStore);
+  return updatedStore;
 };
 
 const render = async (root, state) => {
-  root.innerHTML = App(state);
+  root.innerHTML = App(state.toJS());
 };
 
 // create content
 const App = state => {
-  let { selectedRover, data, photos, rovers } = state;
-
+  let { selectedRover, data, photos, rovers, user } = state;
   return `
         <header></header>
         <main>
-            ${Greeting(store.user.name)}
+            ${Greeting(user.name)}
             <section>
                 <div class="RoverName">
                   <h3>${selectedRover}</h3>
@@ -116,13 +116,13 @@ const getRoverData = async (rover, update) => {
     const response = await fetch(`http://localhost:3000/rovers?rover=${rover}`);
     const data = await response.json();
     const { landingDate, launchDate, status, maxDate, maxSol } = data;
-    update(store, {
+    const newStore = update(store, {
       data: { landingDate, launchDate, status, maxDate }
     });
-    await getRoverPhotos(rover, maxSol, update);
+    await getRoverPhotos(rover, maxSol, update, newStore);
   } catch (e) {}
 };
-const getRoverPhotos = async (rover, sol, update) => {
+const getRoverPhotos = async (rover, sol, update, store) => {
   try {
     const response = await fetch(`http://localhost:3000/photos?rover=${rover}&sol=${sol}`);
     const data = await response.json();
