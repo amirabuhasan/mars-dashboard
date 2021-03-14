@@ -68,7 +68,7 @@ const RoverInfo = (data, photos) => {
   if (!data) {
     return `<div class="RoverInfo">Loading rover info...</div>`;
   }
-  const { landingDate, launchDate, status } = data;
+  const { landingDate, launchDate, maxDate, status } = data;
   return `
     <div class="RoverInfo">
       <div>
@@ -79,6 +79,9 @@ const RoverInfo = (data, photos) => {
       </div>
       <div>
         <span>Current status: ${status}</span>
+      </div>
+      <div>
+        <span>Date photos taken: ${maxDate}</span>
       </div>
     </div>
      ${RoverPhotos(photos)}
