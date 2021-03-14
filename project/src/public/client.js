@@ -43,8 +43,7 @@ const App = state => {
                     </select>
                   </label>
                 </div>
-                ${RoverInfo(data)}
-                ${RoverPhotos(photos)}
+                ${RoverInfo(data, photos)}
             </section>
         </main>
         <footer></footer>
@@ -65,7 +64,7 @@ const Greeting = name => {
   return `<h1 class="Greeting">${name ? `Welcome, ${name}` : 'Hello'}!</h1>`;
 };
 
-const RoverInfo = data => {
+const RoverInfo = (data, photos) => {
   if (!data) {
     return `<div class="RoverInfo">Loading rover info...</div>`;
   }
@@ -82,6 +81,7 @@ const RoverInfo = data => {
         <span>Current status: ${status}</span>
       </div>
     </div>
+     ${RoverPhotos(photos)}
   `;
 };
 
