@@ -32,12 +32,14 @@ const App = state => {
                   <label>
                     Select a rover:
                     <select id="SelectRover" name="rovers" onchange="onChange(this)">
-                      ${rovers.map(
-                        r =>
-                          `<option value=${r} ${
-                            selectedRover === r ? 'selected' : ''
-                          }>${r}</option>`
-                      )}
+                      ${rovers
+                        .map(
+                          r =>
+                            `<option value=${r} ${
+                              selectedRover === r ? 'selected' : ''
+                            }>${r}</option>`
+                        )
+                        .join('')}
                     </select>
                   </label>
                 </div>
@@ -91,9 +93,11 @@ const RoverPhotos = photos => {
   }
   return `
     <div class="RoverPhotos">
-      ${photos.map(p => {
-        return `<img class="RoverPhoto" src=${p.imgSrc} />`;
-      })}
+      ${photos
+        .map(p => {
+          return `<img class="RoverPhoto" src=${p.imgSrc} />`;
+        })
+        .join('')}
     </div>
   `;
 };
