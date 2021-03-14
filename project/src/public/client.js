@@ -31,7 +31,7 @@ const App = state => {
                   <h3>${selectedRover}</h3>
                   <label>
                     Select a rover:
-                    <select id="SelectRover" name="rovers" onchange="onChange(this)">
+                    <select id="SelectRover" name="rovers" onchange="onChange(this, updateStore)">
                       ${rovers
                         .map(
                           r =>
@@ -56,8 +56,8 @@ window.addEventListener('load', () => {
   getRoverData('Curiosity', updateStore);
 });
 // ------------------------------------------------------  COMPONENTS
-const onChange = ({ value }) => {
-  getRoverData(value, updateStore);
+const onChange = ({ value }, update) => {
+  getRoverData(value, update);
 };
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
 const Greeting = name => {
