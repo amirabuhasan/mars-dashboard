@@ -53,11 +53,11 @@ const App = state => {
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
   render(root, store);
-  getRoverData('Curiosity');
+  getRoverData('Curiosity', updateStore);
 });
 // ------------------------------------------------------  COMPONENTS
 const onChange = ({ value }) => {
-  getRoverData(value);
+  getRoverData(value, updateStore);
 };
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
 const Greeting = name => {
@@ -103,9 +103,9 @@ const RoverPhotos = photos => {
 };
 
 // ------------------------------------------------------  API CALLS
-const getRoverData = async rover => {
+const getRoverData = async (rover, update) => {
   try {
-    updateStore(store, {
+    update(store, {
       data: null,
       photos: [],
       selectedRover: rover
@@ -113,18 +113,16 @@ const getRoverData = async rover => {
     const response = await fetch(`http://localhost:3000/rovers?rover=${rover}`);
     const data = await response.json();
     const { landingDate, launchDate, status, maxDate, maxSol } = data;
-    updateStore(store, {
+    update(store, {
       data: { landingDate, launchDate, status, maxDate }
     });
-    await getRoverPhotos(rover, maxSol);
+    await getRoverPhotos(rover, maxSol, update);
   } catch (e) {}
 };
-const getRoverPhotos = async (rover, sol, page = 1) => {
+const getRoverPhotos = async (rover, sol, update) => {
   try {
-    const response = await fetch(
-      `http://localhost:3000/photos?rover=${rover}&sol=${sol}&page=${page}`
-    );
+    const response = await fetch(`http://localhost:3000/photos?rover=${rover}&sol=${sol}`);
     const data = await response.json();
-    updateStore(store, { photos: data.photos });
+    update(store, { photos: data.photos });
   } catch (e) {}
 };

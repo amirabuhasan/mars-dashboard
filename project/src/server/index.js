@@ -29,9 +29,9 @@ app.get('/rovers', async (req, res) => {
 
 app.get('/photos', async (req, res) => {
   try {
-    const { rover, sol, page } = req.query;
+    const { rover, sol } = req.query;
     const response = await fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=${sol}&page=${page}&api_key=${process.env.API_KEY}`
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=${sol}&page=1&api_key=${process.env.API_KEY}`
     );
     const data = camelize(await response.json());
     res.send({ photos: data.photos });
