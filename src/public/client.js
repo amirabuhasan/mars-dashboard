@@ -29,19 +29,7 @@ const App = state => {
             <section>
                 <div class="RoverName">
                   <h3>${selectedRover}</h3>
-                  <label>
-                    Select a rover:
-                    <select id="SelectRover" name="rovers" onchange="onChange(this, updateStore)">
-                      ${rovers
-                        .map(
-                          r =>
-                            `<option value=${r} ${
-                              selectedRover === r ? 'selected' : ''
-                            }>${r}</option>`
-                        )
-                        .join('')}
-                    </select>
-                  </label>
+                  ${RoverDropdown(selectedRover, rovers)}
                 </div>
                 ${RoverInfo(data, photos)}
             </section>
@@ -59,11 +47,22 @@ window.addEventListener('load', () => {
 const onChange = ({ value }, update) => {
   getRoverData(value, update);
 };
-// Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
+
+const RoverDropdown = (selectedRover, rovers) => {
+  return `
+    <label>
+      Select a rover:
+      <select id="SelectRover" name="rovers" onchange="onChange(this, updateStore)">
+        ${rovers
+          .map(r => `<option value=${r} ${selectedRover === r ? 'selected' : ''}>${r}</option>`)
+          .join('')}
+      </select>
+    </label>
+  `;
+};
 const Greeting = name => {
   return `<h1 class="Greeting">${name ? `Welcome, ${name}` : 'Hello'}!</h1>`;
 };
-
 const RoverInfo = (data, photos) => {
   if (!data) {
     return `<div class="RoverInfo">Loading rover info...</div>`;
@@ -87,7 +86,6 @@ const RoverInfo = (data, photos) => {
      ${RoverPhotos(photos)}
   `;
 };
-
 const RoverPhotos = photos => {
   if (!photos || photos.length === 0) {
     return `
@@ -96,11 +94,7 @@ const RoverPhotos = photos => {
   }
   return `
     <div class="RoverPhotos">
-      ${photos
-        .map(p => {
-          return `<img class="RoverPhoto" src=${p.imgSrc} />`;
-        })
-        .join('')}
+      ${photos.map(p => `<img class="RoverPhoto" src=${p.imgSrc} style="margin:2px;"/>`).join('')}
     </div>
   `;
 };
@@ -120,12 +114,16 @@ const getRoverData = async (rover, update) => {
       data: { landingDate, launchDate, status, maxDate }
     });
     await getRoverPhotos(rover, maxSol, update, newStore);
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 };
 const getRoverPhotos = async (rover, sol, update, store) => {
   try {
     const response = await fetch(`http://localhost:3000/photos?rover=${rover}&sol=${sol}`);
     const data = await response.json();
     update(store, { photos: Immutable.List(data.photos) });
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 };
