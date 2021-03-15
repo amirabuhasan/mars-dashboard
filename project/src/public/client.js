@@ -1,9 +1,9 @@
 let store = Immutable.Map({
-  user: { name: 'Student' },
-  rovers: ['Curiosity', 'Opportunity', 'Spirit'],
+  user: Immutable.Map({ name: 'Student' }),
+  rovers: Immutable.List(['Curiosity', 'Opportunity', 'Spirit']),
   data: null,
   selectedRover: 'Curiosity',
-  photos: []
+  photos: Immutable.List([])
 });
 
 // add our markup to the page
@@ -126,6 +126,6 @@ const getRoverPhotos = async (rover, sol, update, store) => {
   try {
     const response = await fetch(`http://localhost:3000/photos?rover=${rover}&sol=${sol}`);
     const data = await response.json();
-    update(store, { photos: data.photos });
+    update(store, { photos: Immutable.List(data.photos) });
   } catch (e) {}
 };
