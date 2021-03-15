@@ -1,0 +1,58 @@
+/* -------------------  MOBILE  --------------------- */
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: Arial;
+  min-height: 100vh;
+}
+
+header {
+  /* header styles */
+}
+
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+footer {
+  /* footer styles */
+}
+
+.RoverInfo {
+  margin-bottom: 20px;
+}
+
+.RoverPhotos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.RoverPhoto {
+  width: 200px;
+  height: 200px;
+}
+
+.RoverName {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* -------------------  TABLET  --------------------- */
+@media (min-width: 768px) {
+  /* use mobile */
+}
+
+/* -------------------  DESKTOP  -------------------- */
+
+@media (min-width: 1224px) {
+  /* use mobile */
+}
+
+/* -------------------  LARGE SCREENS  -------------- */
+
+@media (min-width: 1824px) {
+  /* use mobile */
+}
